@@ -1,27 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
-import SoundComponent from './SoundsComponent/SoundComponent';
-import Sound from 'react-sound';
+import Layout from './containers/Layout/Layout';
 
 
 
 
 class App extends Component {
 
-  state = {
-    playStatus: Sound.status.STOPPED
-  }
 
-
-  playSongHandler = () => {
-    this.setState({playStatus: Sound.status.PLAYING})
-  }
 
   render() {
     return (
       <div className="App">
-        <button onClick={this.playSongHandler}>PLAY</button>
-        <SoundComponent playStatus={this.state.playStatus}/>
+        <Layout>
+          
+          
+        </Layout>
       </div>
     );
   }

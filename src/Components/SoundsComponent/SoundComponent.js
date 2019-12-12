@@ -1,6 +1,6 @@
 import React from 'react';
 import Sound from 'react-sound';
-import {soundsURL} from '../sounds/Sounds';
+import {soundsURL} from '../../assets/sounds/Sounds';
 
 class SoundComponent extends React.Component {
 
