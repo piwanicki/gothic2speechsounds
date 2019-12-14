@@ -4,16 +4,26 @@ import {soundsURL} from '../../assets/sounds/Sounds';
 
 class SoundComponent extends React.Component {
 
+
+
+  finishedSonghandler = () => {
+
+  }
+
   render() {
 
 
-    const soundIDX = Math.floor(Math.random() * soundsURL.length);
-    console.log(soundIDX)
+
+    const smallTalkSex = this.props.smallTalk;
+    const talkCategory = soundsURL[smallTalkSex];
+    console.log(talkCategory)
+    const soundIDX = Math.floor(Math.random() * talkCategory.length);
     return <Sound 
-      url={soundsURL[soundIDX]}
+      url={talkCategory[soundIDX]}
       playStatus={this.props.playStatus}
       autoLoad={true}
-      autoPlay={true}
+      autoPlay={false}
+      onFinishedPlaying={this.props.onFinish}
     />
   }
 
