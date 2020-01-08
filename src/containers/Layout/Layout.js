@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import classes from './Layout.module.css';
 import Controls from '../../Components/Controls/Controls'
+import RightsAdnotation from '../../Components/RightsAdnotation/rightsAdnotation';
+
 
 class Layout extends Component { 
 
@@ -9,6 +11,7 @@ class Layout extends Component {
       <div className={classes.Layout}>
 
         <Controls />
+        <RightsAdnotation />
         {this.props.children}
       </div>
     )
