@@ -9,7 +9,7 @@ import {faPlay} from '@fortawesome/free-solid-svg-icons'
 class Controls extends Component {
   state = {
     playStatus: Sound.status.STOPPED,
-    smallTalk: "maleSmallTalk",
+    category: "maleSmallTalk",
   };
 
   playSongHandler = () => {
@@ -18,7 +18,7 @@ class Controls extends Component {
 
   smalltalkHandler = (value) => {
     this.setState({
-      smallTalk: value,
+      category: value,
       playStatus: Sound.status.STOPPED,
       });
   }
@@ -36,10 +36,11 @@ class Controls extends Component {
           <select onChange={(e) => this.smalltalkHandler(e.target.value)}>
             <option value={"maleSmallTalk"}>Obywatel</option>
             <option value={"femaleSmalltalk"}>Obywatelka</option>
+            <option value={"vatrasSpeech"}>Przemówienie Vatrasa</option>
           </select>
           </div>
           <button onClick={this.playSongHandler} className={classes.PlayBtn}><FontAwesomeIcon icon={faPlay}/></button>
-          <SoundComponent playStatus={this.state.playStatus} smallTalk={this.state.smallTalk} onFinish={this.onFinishedPlayingHandler}/>
+          <SoundComponent playStatus={this.state.playStatus} category={this.state.category} onFinish={this.onFinishedPlayingHandler}/>
         </div>
       </>
     );

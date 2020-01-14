@@ -3,17 +3,37 @@ import Sound from "react-sound";
 import { soundsURL } from "../../assets/sounds/Sounds";
 
 class SoundComponent extends React.Component {
+
+state = {
+  soundIDX: 0
+}
+
+  onFinishHandler = () => {
+ 
+    const category = this.props.category;
+
+    if(category === 'vatrasSpeech'){
+      const currentIdx =  this.state.soundIDX;
+      const idx = this.state.soundIDX === 20 ? 0 : currentIdx+1;
+      this.setState({
+        soundIDX: idx
+      })
+    }
+  }
+
+
   render() {
-    const smallTalkSex = this.props.smallTalk;
-    const talkCategory = soundsURL[smallTalkSex];
-    const soundIDX = Math.floor(Math.random() * talkCategory.length);
+    const category = this.props.category;
+    const soundCategory = soundsURL[category];
+    let soundIDX = this.props.category === 'vatrasSpeech' ? this.state.soundIDX : Math.floor(Math.random() * soundCategory.length);
     return (
       <Sound
-        url={talkCategory[soundIDX]}
+        url={soundCategory[soundIDX]}
         playStatus={this.props.playStatus}
         autoLoad={true}
         autoPlay={false}
-        onFinishedPlaying={this.props.onFinish}
+        onFinishedPlaying={this.onFinishHandler}
+        
       />
     );
   }
