@@ -15,9 +15,12 @@ state = {
     if(category === 'vatrasSpeech'){
       const currentIdx =  this.state.soundIDX;
       const idx = this.state.soundIDX === 20 ? 0 : currentIdx+1;
+      if(idx !== 0){
       this.setState({
         soundIDX: idx
       })
+      }
+
     }
   }
 
