@@ -1,5 +1,5 @@
 import React from "react";
-import classes from './rightsAdnotation.module.css';
+import classes from './rightsAdnotation.module.scss';
 
 const rightsAdnotation = props => {
   return (

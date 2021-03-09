@@ -1,25 +1,13 @@
-import React, { Component } from 'react';
-import './App.css';
-import Layout from './containers/Layout/Layout';
+import React  from "react";
+import "./App.scss";
+import Layout from "./containers/Layout/Layout";
 
-
-
-
-class App extends Component {
-
-
-
-  render() {
-    return (
-      <div className="App">
-        <Layout>
-          
-          
-        </Layout>
-      </div>
-    );
-  }
-
-}
+const App = (props) => {
+  return (
+    <div className="App">
+      <Layout />
+    </div>
+  );
+};
 
 export default App;

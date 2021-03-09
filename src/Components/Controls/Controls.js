@@ -1,52 +1,59 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import SoundComponent from "../SoundsComponent/SoundComponent";
 import Sound from "react-sound";
-import classes from "./Controls.module.css";
+import classes from "./Controls.module.scss";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlay} from "@fortawesome/free-solid-svg-icons";
+import queryString from 'query-string';
+import {soundsURL, soundsCategories} from '../../assets/sounds/Sounds'
 
-class Controls extends Component {
-  state = {
-    playStatus: Sound.status.STOPPED,
-    category: "maleSmallTalk",
-    showGoldSelect: false,
+const Controls = (props) =>  {
+
+  const [playStatus, setPlayStatus] = useState(Sound.status.STOPPED);
+  const [category, setCategory] = useState('maleSmallTalk');
+  const [soundForCategory, setSoundForCategory] = useState(0);
+  const [showGoldSelect,setShowGoldSelect] = useState(false);
+
+  const playSongHandler = () => {
+    setPlayStatus(Sound.status.PLAYING);
   };
 
-  playSongHandler = () => {
-    this.setState({playStatus: Sound.status.PLAYING});
-  };
-
-  categoryHandler = (value) => {
+  const categoryHandler = (value) => {
     if (value === "howManyGold") {
-      this.setState({showGoldSelect: !this.state.showGoldSelect});
+      setShowGoldSelect(!showGoldSelect);
     } else {
-      this.setState({showGoldSelect: false});
+      setShowGoldSelect(false);
     }
-    this.setState({
-      category: value,
-      soundForCategory : 0, // set first index
-      playStatus: Sound.status.STOPPED,
-    });
+    setCategory(value);
+    setPlayStatus(Sound.status.STOPPED);
   };
 
-  soundHandler = (value) => {
-    this.setState({
-      soundForCategory : value
-    })
+  const soundHandler = (value) => {
+    setSoundForCategory(parseInt(value));
   }
 
-  onFinishedPlayingHandler = () => {
-    this.setState({playStatus: Sound.status.STOPPED});
+  const onFinishedPlayingHandler = () => {
+    setPlayStatus(Sound.status.STOPPED);
   };
 
-  render() {
-    console.log(this.state)
+  const queryObj = queryString.parse(window.location.search);
+  if(Object.keys(queryObj).length > 0 ) {
+    const category = queryObj.cat;
+    const soundsID = queryObj.id;
+    console.log(category, soundsID)
+    if(soundsCategories.includes(queryObj.cat)) {
+      if(queryObj.id <= soundsURL[queryObj.cat]) {
+        setCategory(category);
+        setSoundForCategory(soundsID);
+      }
+    }
+  } 
+
     return (
-      <>
         <div className={classes.Controls}>
           <div className={classes.SelectContainer}>
             <p className={classes.voiceP}>Głos</p>
-            <select onChange={(e) => this.categoryHandler(e.target.value)}>
+            <select onChange={(e) => categoryHandler(e.target.value)}>
               <option value={"maleSmallTalk"}>Obywatel</option>
               <option value={"femaleSmalltalk"}>Obywatelka</option>
               <option value={"vatrasSpeech"}>Przemówienie Vatrasa</option>
@@ -54,8 +61,8 @@ class Controls extends Component {
               <option value={"howManyGold"}>ZŁOTO</option>
               <option value={"fight"}>Ah walka!</option>
             </select>
-            {this.state.showGoldSelect && (
-              <select onChange={(e) => this.soundHandler(e.target.value)}>
+            {showGoldSelect && (
+              <select onChange={(e) => soundHandler(e.target.value)}>
                 <option value={0}>10</option>
                 <option value={1}>20</option>
                 <option value={2}>30</option>
@@ -87,19 +94,18 @@ class Controls extends Component {
               </select>
             )}
           </div>
-          <button onClick={this.playSongHandler} className={classes.PlayBtn}>
+          <button onClick={playSongHandler} className={classes.PlayBtn}>
             <FontAwesomeIcon icon={faPlay} />
           </button>
           <SoundComponent
-            playStatus={this.state.playStatus}
-            category={this.state.category}
-            soundForCategory={this.state.soundForCategory}
-            onFinish={this.onFinishedPlayingHandler}
+            playStatus={playStatus}
+            category={category}
+            soundForCategory={soundForCategory}
+            onFinishedPlaying={onFinishedPlayingHandler}
           />
         </div>
-      </>
+     
     );
-  }
 }
 
 export default Controls;
