@@ -11,11 +11,13 @@ const options = [
 ];
 
 const CategorySelect = (props) => {
+
+const selectedValue = options.find(o => o.value === props.value);
   return (
     <Select
       options={options}
       onChange={props.onChangeHandler}
-      defaultValue={props.value}
+      value={selectedValue}
       placeholder="Wybierz"
     />
   );

@@ -1,0 +1,11 @@
+.CopiedToCliboard {
+    position: absolute;
+    top:0;
+    left:50%;
+    transform: translateX(-50%);
+    p {
+        background-color: whitesmoke;
+        color: black;
+        padding: 10px;
+    }
+}

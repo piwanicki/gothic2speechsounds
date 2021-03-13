@@ -6,14 +6,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlay, faStop, faLink} from "@fortawesome/free-solid-svg-icons";
 import queryString from "query-string";
 import {soundsURL, soundsCategories} from "../../assets/sounds/Sounds";
-import GoldSelect from './SelectComponent/GoldSelect';
+import GoldSelect from "./SelectComponent/GoldSelect";
 import CategorySelect from "./SelectComponent/CategorySelect";
-
-
+import CopiedToCliboard from "./CopiedToCliboard/CopiedToClipboard";
 
 const Controls = (props) => {
   const queryObj = queryString.parse(window.location.search);
-
   let initCategory = "maleSmallTalk";
   let initSoundID = 0;
   let initShowGoldSelect = false;
@@ -40,6 +38,7 @@ const Controls = (props) => {
   const [soundID, setsoundID] = useState(initSoundID);
   const [showGoldSelect, setShowGoldSelect] = useState(initShowGoldSelect);
   const [autoPlay, setAutoPlay] = useState(initAutoPlay);
+  const [showCopiedClipboard, setShowCopiedClipboard] = useState(false);
 
   const playSongHandler = () => {
     setPlayStatus(Sound.status.PLAYING);
@@ -68,34 +67,64 @@ const Controls = (props) => {
     setAutoPlay(false);
   };
 
+  const showCopiedInfo = () => {
+    setShowCopiedClipboard(true);
+  };
+
+  const linkCopied = () => {
+    const generateLink = `${window.location.href}?cat=${category}&id=${soundID}`;
+    const input = document.querySelector(`.${classes.LinkInputHidden}`);
+    input.value = generateLink;
+    input.select();
+    document.execCommand("copy");
+    showCopiedInfo();
+    setTimeout(() => {
+      setShowCopiedClipboard(false);
+    },1500)
+  };
+
   return (
-    <div className={classes.Controls}>
-      <div className={classes.SelectContainer}>
-        <p className={classes.voiceP}>Głos</p>
-        <CategorySelect onChangeHandler={(e) => categoryHandler(e.value)} value={category}/>
-        {showGoldSelect && (
-          <GoldSelect onChangeHandler={(e) => soundHandler(e.value)} value={soundID}/>
+    <>
+      {showCopiedClipboard && <CopiedToCliboard />}
+      <div className={classes.Controls}>
+        <div className={classes.SelectContainer}>
+          <p className={classes.voiceP}>Kategoria</p>
+          <CategorySelect
+            onChangeHandler={(e) => categoryHandler(e.value)}
+            value={category}
+          />
+          {showGoldSelect && (
+            <GoldSelect
+              onChangeHandler={(e) => soundHandler(e.value)}
+              value={soundID}
+            />
+          )}
+        </div>
+        {playStatus === Sound.status.STOPPED ? (
+          <button onClick={playSongHandler} className={classes.PlayBtn}>
+            <FontAwesomeIcon icon={faPlay} title='Odtwórz'/>
+          </button>
+        ) : (
+          <button onClick={stopSongHandler} className={classes.PlayBtn}>
+            <FontAwesomeIcon icon={faStop} title='Stop'/>
+          </button>
         )}
+        <FontAwesomeIcon
+          icon={faLink}
+          className={classes.GenerateLinkBtn}
+          title="Skopiuj link"
+          onClick={linkCopied}
+        />
+        <SoundComponent
+          playStatus={playStatus}
+          category={category}
+          soundForCategory={soundID}
+          onFinishedPlaying={onFinishedPlayingHandler}
+          autoPlay={autoPlay}
+        />
       </div>
-      {playStatus === Sound.status.STOPPED ? (
-        <button onClick={playSongHandler} className={classes.PlayBtn}>
-          <FontAwesomeIcon icon={faPlay} />
-        </button>
-      ) : (
-        <button onClick={stopSongHandler} className={classes.PlayBtn}>
-          <FontAwesomeIcon icon={faStop} />
-        </button>
-      )}
-      <FontAwesomeIcon icon={faLink} className={classes.GenerateLinkBtn} />
-      <SoundComponent
-        playStatus={playStatus}
-        category={category}
-        soundForCategory={soundID}
-        onFinishedPlaying={onFinishedPlayingHandler}
-        autoPlay={autoPlay}
-      />
-      
-    </div>
+      <input type='text' className={classes.LinkInputHidden} />
+    </>
   );
 };
 
