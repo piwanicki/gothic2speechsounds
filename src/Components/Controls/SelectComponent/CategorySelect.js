@@ -8,6 +8,7 @@ const options = [
   {value: "xardasIntro", label: "Xardas Intro"},
   {value: "howManyGold", label: "ZŁOTO"},
   {value: "fight", label: "Ah walka!"},
+  {value: "others", label: "Różne"},
 ];
 
 const CategorySelect = (props) => {

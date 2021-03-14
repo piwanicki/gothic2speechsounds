@@ -10,13 +10,22 @@ import GoldSelect from "./SelectComponent/GoldSelect";
 import CategorySelect from "./SelectComponent/CategorySelect";
 import CopiedToCliboard from "./CopiedToCliboard/CopiedToClipboard";
 
+
+// some workaround to autoplay sound
+const queryObj = queryString.parse(window.location.search);
+if (Object.keys(queryObj).length > 0) {
+  setTimeout(() => {
+    const playBtn = document.querySelector("#btn-play");
+    playBtn.focus();
+    playBtn.click();
+  }, 1000);
+}
+
 const Controls = (props) => {
-  const queryObj = queryString.parse(window.location.search);
   let initCategory = "maleSmallTalk";
   let initSoundID = 0;
   let initShowGoldSelect = false;
   let initAutoPlay = false;
-  //let initPlayStatus = Sound.status.STOPPED;
 
   if (Object.keys(queryObj).length > 0) {
     const category = queryObj.cat;
@@ -55,6 +64,7 @@ const Controls = (props) => {
       setShowGoldSelect(false);
     }
     setCategory(value);
+    setsoundID(0);
     stopSongHandler();
   };
 
@@ -72,7 +82,7 @@ const Controls = (props) => {
   };
 
   const linkCopied = () => {
-    const generateLink = `${window.location.href}?cat=${category}&id=${soundID}`;
+    const generateLink = `${window.location.origin}?cat=${category}&id=${soundID}`;
     const input = document.querySelector(`.${classes.LinkInputHidden}`);
     input.value = generateLink;
     input.select();
@@ -80,7 +90,7 @@ const Controls = (props) => {
     showCopiedInfo();
     setTimeout(() => {
       setShowCopiedClipboard(false);
-    },1500)
+    }, 1500);
   };
 
   return (
@@ -101,12 +111,16 @@ const Controls = (props) => {
           )}
         </div>
         {playStatus === Sound.status.STOPPED ? (
-          <button onClick={playSongHandler} className={classes.PlayBtn}>
-            <FontAwesomeIcon icon={faPlay} title='Odtwórz'/>
+          <button
+            onClick={playSongHandler}
+            className={classes.PlayBtn}
+            id="btn-play"
+          >
+            <FontAwesomeIcon icon={faPlay} title="Odtwórz" />
           </button>
         ) : (
           <button onClick={stopSongHandler} className={classes.PlayBtn}>
-            <FontAwesomeIcon icon={faStop} title='Stop'/>
+            <FontAwesomeIcon icon={faStop} title="Stop" />
           </button>
         )}
         <FontAwesomeIcon
@@ -123,7 +137,7 @@ const Controls = (props) => {
           autoPlay={autoPlay}
         />
       </div>
-      <input type='text' className={classes.LinkInputHidden} />
+      <input type="text" className={classes.LinkInputHidden} />
     </>
   );
 };

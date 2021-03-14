@@ -33,11 +33,11 @@ const SoundComponent = (props) => {
   const category = props.category;
   const soundCategory = soundsURL[category];
   let soundIdx = props.soundForCategory;
-  if (props.category === "vatrasSpeech" || props.category === "xardasIntro") {
+  if (props.category === "vatrasSpeech" || props.category === "xardasIntro" || props.fromLink) {
     soundIdx = soundIDX;
   } else if (props.category === "howManyGold") {
     soundIdx = props.soundForCategory;
-  } else {
+  } else  {
     soundIdx = Math.floor(Math.random() * soundCategory.length);
   }
   return (
