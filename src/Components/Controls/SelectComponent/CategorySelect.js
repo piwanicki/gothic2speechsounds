@@ -1,6 +1,7 @@
 import React from "react";
 import Select from "react-select";
-
+import classes from './SelectStyle.module.scss'
+;
 const options = [
   {value: "maleSmallTalk", label: "Obywatel"},
   {value: "femaleSmalltalk", label: "Obywatelka"},
@@ -20,7 +21,8 @@ const selectedValue = options.find(o => o.value === props.value);
       onChange={props.onChangeHandler}
       value={selectedValue}
       placeholder="Wybierz"
-    />
+      className={classes.CustomSelect}
+      />
   );
 };
 

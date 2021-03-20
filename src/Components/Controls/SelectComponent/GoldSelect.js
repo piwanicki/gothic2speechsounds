@@ -1,5 +1,6 @@
 import React from "react";
 import Select from "react-select";
+import classes from './SelectStyle.module.scss'
 
 const options = [
   {value: 0, label: 10},
@@ -33,7 +34,6 @@ const options = [
 ];
 
 const GoldSelect = (props) => {
-
   const selectedValue = options.find(o => o.value === props.value);
   return (
     <Select
@@ -41,6 +41,7 @@ const GoldSelect = (props) => {
       onChange={props.onChangeHandler}
       value={selectedValue}
       placeholder="Wybierz"
+      className={classes.GoldSelect}
     />
   );
 };

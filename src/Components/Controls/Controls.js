@@ -1,25 +1,13 @@
 import React, {useState} from "react";
 import SoundComponent from "../SoundsComponent/SoundComponent";
-import Sound from "react-sound";
 import classes from "./Controls.module.scss";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlay, faStop, faLink} from "@fortawesome/free-solid-svg-icons";
+import {faLink} from "@fortawesome/free-solid-svg-icons";
 import queryString from "query-string";
 import {soundsURL, soundsCategories} from "../../assets/sounds/Sounds";
 import GoldSelect from "./SelectComponent/GoldSelect";
 import CategorySelect from "./SelectComponent/CategorySelect";
 import CopiedToCliboard from "./CopiedToCliboard/CopiedToClipboard";
-
-
-// some workaround to autoplay sound
-const queryObj = queryString.parse(window.location.search);
-if (Object.keys(queryObj).length > 0) {
-  setTimeout(() => {
-    const playBtn = document.querySelector("#btn-play");
-    playBtn.focus();
-    playBtn.click();
-  }, 1000);
-}
 
 const Controls = (props) => {
   let initCategory = "maleSmallTalk";
@@ -27,6 +15,7 @@ const Controls = (props) => {
   let initShowGoldSelect = false;
   let initAutoPlay = false;
 
+  const queryObj = queryString.parse(window.location.search);
   if (Object.keys(queryObj).length > 0) {
     const category = queryObj.cat;
     const soundID = parseInt(queryObj.id);
@@ -42,20 +31,11 @@ const Controls = (props) => {
     }
   }
 
-  const [playStatus, setPlayStatus] = useState(Sound.status.STOPPED);
   const [category, setCategory] = useState(initCategory);
   const [soundID, setsoundID] = useState(initSoundID);
   const [showGoldSelect, setShowGoldSelect] = useState(initShowGoldSelect);
   const [autoPlay, setAutoPlay] = useState(initAutoPlay);
   const [showCopiedClipboard, setShowCopiedClipboard] = useState(false);
-
-  const playSongHandler = () => {
-    setPlayStatus(Sound.status.PLAYING);
-  };
-
-  const stopSongHandler = () => {
-    setPlayStatus(Sound.status.STOPPED);
-  };
 
   const categoryHandler = (value) => {
     if (value === "howManyGold") {
@@ -65,20 +45,22 @@ const Controls = (props) => {
     }
     setCategory(value);
     setsoundID(0);
-    stopSongHandler();
+    setAutoPlay(false);
   };
 
   const soundHandler = (value) => {
     setsoundID(parseInt(value));
   };
 
-  const onFinishedPlayingHandler = () => {
-    stopSongHandler();
-    setAutoPlay(false);
-  };
-
   const showCopiedInfo = () => {
     setShowCopiedClipboard(true);
+  };
+
+
+  const setRandomSound = () => {
+    const soundCategory = soundsURL[category];
+    const randomSound = Math.floor(Math.random() * soundCategory.length);
+    setsoundID(randomSound);
   };
 
   const linkCopied = () => {
@@ -93,16 +75,48 @@ const Controls = (props) => {
     }, 1500);
   };
 
+  const onFinishHandler = () => {
+    if (category === "vatrasSpeech") {
+      continueAutoPlay(20);
+    }
+    if (category === "xardasIntro") {
+      continueAutoPlay(8);
+    }
+
+    if (category !== "howManyGold") {
+      setRandomSound();
+      setAutoPlay(false);
+    }
+  };
+
+  const continueAutoPlay = (soundFileLength) => {
+    const idx = soundID === soundFileLength ? 0 : soundID + 1;
+    if (idx !== 0) {
+      setsoundID(idx);
+      setAutoPlay(true);
+    } else {
+      setAutoPlay(false);
+    }
+  };
+
   return (
     <>
       {showCopiedClipboard && <CopiedToCliboard />}
       <div className={classes.Controls}>
         <div className={classes.SelectContainer}>
           <p className={classes.voiceP}>Kategoria</p>
-          <CategorySelect
-            onChangeHandler={(e) => categoryHandler(e.value)}
-            value={category}
-          />
+          <div className={classes.CategprySelectBox}>
+            <CategorySelect
+              onChangeHandler={(e) => categoryHandler(e.value)}
+              value={category}
+            />
+            <FontAwesomeIcon
+              icon={faLink}
+              className={classes.GenerateLinkBtn}
+              title="Skopiuj link"
+              onClick={linkCopied}
+            />
+          </div>
           {showGoldSelect && (
             <GoldSelect
               onChangeHandler={(e) => soundHandler(e.value)}
@@ -110,30 +124,10 @@ const Controls = (props) => {
             />
           )}
         </div>
-        {playStatus === Sound.status.STOPPED ? (
-          <button
-            onClick={playSongHandler}
-            className={classes.PlayBtn}
-            id="btn-play"
-          >
-            <FontAwesomeIcon icon={faPlay} title="Odtwórz" />
-          </button>
-        ) : (
-          <button onClick={stopSongHandler} className={classes.PlayBtn}>
-            <FontAwesomeIcon icon={faStop} title="Stop" />
-          </button>
-        )}
-        <FontAwesomeIcon
-          icon={faLink}
-          className={classes.GenerateLinkBtn}
-          title="Skopiuj link"
-          onClick={linkCopied}
-        />
         <SoundComponent
-          playStatus={playStatus}
           category={category}
           soundForCategory={soundID}
-          onFinishedPlaying={onFinishedPlayingHandler}
+          onFinishedPlaying={onFinishHandler}
           autoPlay={autoPlay}
         />
       </div>
