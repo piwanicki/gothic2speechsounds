@@ -36,6 +36,7 @@ const Controls = (props) => {
   const [showGoldSelect, setShowGoldSelect] = useState(initShowGoldSelect);
   const [autoPlay, setAutoPlay] = useState(initAutoPlay);
   const [showCopiedClipboard, setShowCopiedClipboard] = useState(false);
+  const [previousSoundID, setPreviousSoundID] = useState(initSoundID);
 
   const categoryHandler = (value) => {
     if (value === "howManyGold") {
@@ -55,8 +56,7 @@ const Controls = (props) => {
   const showCopiedInfo = () => {
     setShowCopiedClipboard(true);
   };
-
-
+ 
   const setRandomSound = () => {
     const soundCategory = soundsURL[category];
     const randomSound = Math.floor(Math.random() * soundCategory.length);
@@ -64,7 +64,7 @@ const Controls = (props) => {
   };
 
   const linkCopied = () => {
-    const generateLink = `${window.location.origin}?cat=${category}&id=${soundID}`;
+    const generateLink = `${window.location.origin}?cat=${category}&id=${previousSoundID}`;
     const input = document.querySelector(`.${classes.LinkInputHidden}`);
     input.value = generateLink;
     input.select();
@@ -99,6 +99,10 @@ const Controls = (props) => {
     }
   };
 
+  const onPlayHandler = () => {
+    setPreviousSoundID(soundID);
+  }
+
   return (
     <>
       {showCopiedClipboard && <CopiedToCliboard />}
@@ -129,6 +133,7 @@ const Controls = (props) => {
           soundForCategory={soundID}
           onFinishedPlaying={onFinishHandler}
           autoPlay={autoPlay}
+          onPlay={onPlayHandler}
         />
       </div>
       <input type="text" className={classes.LinkInputHidden} />
